@@ -1,0 +1,49 @@
+name: Release Windows installer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Install voice runtime dependencies
+        run: python -m pip install -r electron/voice/requirements.txt
+
+      - name: Create build environment placeholder
+        shell: pwsh
+        run: New-Item -ItemType File -Path .env -Force
+
+      - name: Build Windows installer
+        run: npm run build:win
+
+      - name: Upload installer to draft release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release upload v1.2.1
+          "release/NoView-Windows-1.2.1.exe"
+          --clobber
+          --repo "${{ github.repository }}"
+
