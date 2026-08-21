@@ -7,7 +7,7 @@ import sys
 
 def main():
     if sys.platform != "win32":
-    raise SystemExit("The NoView voice runtime must be built on Windows.")
+        raise SystemExit("The NoView voice runtime must be built on Windows.")
 
     try:
         import PyInstaller.__main__
@@ -60,7 +60,7 @@ def main():
     executable = dist_dir / "voice_transcriber" / "voice_transcriber.exe"
     if not executable.is_file():
         raise SystemExit(f"Voice runtime build did not create {executable}")
-print(f"NoView voice runtime created at {executable}")
+    print(f"NoView voice runtime created at {executable}")
 
 
 if __name__ == "__main__":
